@@ -1,17 +1,16 @@
-long long tree[MAX_N];
- 
-void update(int idx, long long val){
-    while(idx < MAX_N){
-        tree[idx] = max(tree[idx], val);
-        idx += (idx & (-idx));
+struct Fenwick {
+    int n;
+    vector<long long> t;
+    Fenwick(int n_): n(n_), t(n_ + 1) {}
+    long long query(int i) {
+        long long v = 0;
+        for (; i > 0; i -= (i & -i)) v += t[i];
+        return v;
     }
-}
- 
-long long query(int idx){
-    long long ret = 0;
-    while(idx > 0){
-        ret = max(ret, tree[idx]);
-        idx -= (idx & (-idx));
+    long long query(int i, int j) {
+        return query(j) - query(i - 1);
     }
-    return ret;
-}
+    void update(int i, long long v) {
+        for (; i <= n; i += (i & -i)) t[i] += v;
+    }
+};
